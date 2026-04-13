@@ -1,0 +1,5 @@
+{
+  "executable": "cl65",
+  "input": "main.s",
+  "params": "--verbose -C nrom256.cfg -o famitower.nes"
+}
