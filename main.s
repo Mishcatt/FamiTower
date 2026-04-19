@@ -66,12 +66,19 @@ load_palettes:
     sta PPUADDR
 
     ldx #$00
-    @loop:
-        lda palettes, x
+    @bgloop:
+        lda bgPalettes, x
         sta PPUDATA
         inx
-        cpx #$20
-        bne @loop
+        cpx #$10
+        bne @bgloop
+    ldx #$00
+    @spriteloop:
+        lda spritePalettes, x
+        sta PPUDATA
+        inx
+        cpx #$10
+        bne @spriteloop
 
 load_initial_sprites:
     ldx #$00
