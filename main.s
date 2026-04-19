@@ -90,7 +90,7 @@ set_scroll:
     ; inc ppuflag
 
 enable_rendering:
-    lda #%10001100	; Enable NMI, sprite tile 1, vertical increment
+    lda #%10001000	; Enable NMI, sprite tile 1, horizontal increment
     sta PPUCTRL
     sta softPPUCTRL
     lda #%00011110	; Enable Sprites and Background
@@ -103,10 +103,8 @@ initial_variables:
     sta currentState
     lda #InitialCenter
     sta currentCenter
-    asl
+    asl ; x2 
     sta currentMapColumn
-    lda #DMCIRQenableValue
-    sta dmcIRQenable
 
     ldx #0
 load_map:
@@ -123,23 +121,6 @@ main_loop:
     beq main_loop   ; wait for nmi_flag
 
     jsr readjoyx2   ; read two gamepads
-
-    lda dmcIRQenable
-    beq :+
-        lda DMCCounterValue
-        sta dmcCounter
-
-        lda #%10001111 ; enable DMC IRQ
-        sta DMC_FREQ
-        lda #0
-        sta DMC_START
-        sta DMC_RAW
-        lda #1
-        sta DMC_LEN
-
-        lda #%00010000 ; enable DMC
-        sta SND_CHN
-    :
 
     stateMachine:
         lda currentState
@@ -208,7 +189,10 @@ MusicEngine:
     rts
 
 .include "nmi.s"
-.include "irq.s"
+
+irq:
+    rti
+
 .include "maps.s"
 .include "sprites.s"
 .include "palettes.s"
